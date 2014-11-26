@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"  
+    xmlns:p="http://primefaces.org/ui">
+<h:head>
+<title>Submit your ad</title>
+</h:head>
+<h:body>
+<h:form>
+	<p:layout fullPage="true">
+	
+		<p:layoutUnit position="north" size="60" style="padding-left:270px;padding-right:200px" >
+	        <p:autoComplete binding="#{resultPageUIBean.searchTextBox}" value="#{resultPageUIModelBean.searchText}" size="75"  completeMethod="#{resultPageUIBean.suggestedQueryTerms}"></p:autoComplete>
+			<p:button value="News Search" ></p:button>
+	    </p:layoutUnit>
+ 
+	    <p:layoutUnit position="west" size="260">
+	        <h:panelGrid cellpadding="5">
+	           <p:autoComplete binding="#{resultPageUIBean.placesBox}" value="#{resultPageUIModelBean.place}" completeMethod="#{resultPageUIBean.getPlaces}"> </p:autoComplete>
+               <h:outputText value="Date" style="font-weight: bold"/>
+               <p:commandLink>
+			       <h:outputText value="Past day" />
+			   </p:commandLink>
+			   <p:commandLink>
+			       <h:outputText value="Past month" />
+			   </p:commandLink>
+			   <p:commandLink>
+			       <h:outputText value="Past year" />
+			   </p:commandLink>
+			   <p:outputLabel for="popup1" value="From date: "/>
+        	   <p:calendar id="popup1" value="#{resultPageUIModelBean.fromDate}"/>
+        	   <p:outputLabel for="popup2" value="To date: "/>
+        	   <p:calendar id="popup2" value="#{resultPageUIModelBean.toDate}"/>
+            </h:panelGrid>
+            <h:panelGrid cellpadding="5" >
+               <h:outputText value="Categories" style="font-weight: bold"/>
+               <p:dataScroller value="#{resultPageUIModelBean.categories}" var="cat" >
+	               <p:commandLink>
+				       <h:outputText value="#{cat}" />
+				   </p:commandLink>
+			   </p:dataScroller>
+            </h:panelGrid>
+	    </p:layoutUnit>
+	 
+	    <p:layoutUnit position="east" size="200" style="border:none">
+	        <h:outputText value="Ads" />
+	        <p:dataScroller value="#{resultPageUIModelBean.ads}" var="ad" chunkSize="3">
+	        	<h:panelGrid cellpadding="5" >
+		        	<h:outputLink value="#{ad.url}" target="_new">#{ad.heading}</h:outputLink>
+		        	<h:outputText value="#{ad.desc}" />
+	        	</h:panelGrid>
+	        </p:dataScroller>
+	    </p:layoutUnit>
+	 
+	    <p:layoutUnit position="center">
+	        <p:dataScroller value="#{resultPageUIModelBean.newsArticles}" var="newsArticle" chunkSize="10">	
+	        	<h:panelGrid cellpadding="5" >
+	        	    <p:commandLink onclick="showHide(this)">
+                   		<h:outputText value="#{newsArticle.heading}" style="font-weight: bold"/>
+                   	</p:commandLink>
+                    <h:outputText value="#{newsArticle.snippet}" />
+                    <h:outputText value="#{newsArticle.content}" style="display:none"/>
+                </h:panelGrid>
+		    </p:dataScroller>
+	    </p:layoutUnit>
+	 
+	</p:layout>
+	</h:form>
+</h:body>
+</html>

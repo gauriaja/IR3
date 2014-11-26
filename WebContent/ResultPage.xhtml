@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  
+    xmlns:h="http://java.sun.com/jsf/html"  
+    xmlns:f="http://java.sun.com/jsf/core"  
+    xmlns:p="http://primefaces.org/ui">
+<h:head>
+<title>Search results</title>
+</h:head>
+<SCRIPT type="text/javascript">
+	function showHide(el) {
+		var ns1 = el.parentNode.parentNode.nextElementSibling;
+		var ns2 = el.parentNode.parentNode.nextElementSibling.nextElementSibling;
+		if(ns1.style.display != "none") {
+			ns1.style.display="none"; 
+			ns2.firstElementChild.firstElementChild.style.display="block"; 
+		}
+		else {
+			ns1.style.display="inline"; 
+			ns2.firstElementChild.firstElementChild.style.display="none"; 
+		}
+	}
+	function nextScreen(nxtBtn) {
+		var tableEle = nxtBtn.parentNode.parentNode.parentNode.parentNode;
+		tableEle.style.display = "none";
+		tableEle.previousElementSibling.innerText = "Enhance your Ad Campaign"
+		tableEle.nextElementSibling.style.display = "block";
+	}
+	
+</SCRIPT>
+<h:body>
+	<h:form>
+		<p:layout fullPage="true">
+		
+			<p:layoutUnit position="north" size="60" style="padding-left:270px;padding-right:200px" >
+		        <p:autoComplete binding="#{resultPageUIBean.searchTextBox}" value="#{resultPageUIModelBean.searchText}" size="75"  completeMethod="#{resultPageUIBean.suggestedQueryTerms}"></p:autoComplete>
+				<p:button value="News Search" ></p:button>
+		    </p:layoutUnit>
+	 
+		    <p:layoutUnit position="west" size="260">
+		        <h:panelGrid cellpadding="5">
+		           <p:autoComplete binding="#{resultPageUIBean.placesBox}" value="#{resultPageUIModelBean.place}" completeMethod="#{resultPageUIBean.getPlaces}"> </p:autoComplete>
+	               <h:outputText value="Date" style="font-weight: bold"/>
+	               <p:commandLink>
+				       <h:outputText value="Past day" />
+				   </p:commandLink>
+				   <p:commandLink>
+				       <h:outputText value="Past month" />
+				   </p:commandLink>
+				   <p:commandLink>
+				       <h:outputText value="Past year" />
+				   </p:commandLink>
+				   <p:outputLabel for="popup1" value="From date: "/>
+	        	   <p:calendar id="popup1" value="#{resultPageUIModelBean.fromDate}"/>
+	        	   <p:outputLabel for="popup2" value="To date: "/>
+	        	   <p:calendar id="popup2" value="#{resultPageUIModelBean.toDate}"/>
+	            </h:panelGrid>
+	            <h:panelGrid cellpadding="5" >
+	               <h:outputText value="Categories" style="font-weight: bold"/>
+	               <p:dataScroller value="#{resultPageUIModelBean.categories}" var="cat" >
+		               <p:commandLink>
+					       <h:outputText value="#{cat}" />
+					   </p:commandLink>
+				   </p:dataScroller>
+	            </h:panelGrid>
+		    </p:layoutUnit>
+		 
+		    <p:layoutUnit position="east" size="200" style="border:none">
+		        <h:outputText value="Ads" />
+		        <p:dataScroller value="#{resultPageUIModelBean.ads}" var="ad" chunkSize="3">
+		        	<h:panelGrid cellpadding="5" >
+			        	<h:outputLink value="#{ad.url}" target="_new">#{ad.heading}</h:outputLink>
+			        	<h:outputText value="#{ad.desc}" />
+		        	</h:panelGrid>
+		        </p:dataScroller>
+		        <p:commandButton value="Basic" type="button" onclick="PF('dlg1').show();" />
+		    </p:layoutUnit>
+		 
+		    <p:layoutUnit position="center">
+		        <p:dataScroller value="#{resultPageUIModelBean.newsArticles}" var="newsArticle" chunkSize="10">	
+		        	<h:panelGrid cellpadding="5" >
+		        	    <p:commandLink onclick="showHide(this)">
+	                   		<h:outputText value="#{newsArticle.heading}" style="font-weight: bold"/>
+	                   	</p:commandLink>
+	                    <h:outputText value="#{newsArticle.snippet}" />
+	                    <h:outputText value="#{newsArticle.content}" style="display:none"/>
+	                </h:panelGrid>
+			    </p:dataScroller>
+		    </p:layoutUnit>
+		 
+		</p:layout>
+		<p:dialog header="Submit your ad" widgetVar="dlg1" minHeight="40">
+			<h:form>
+				<h:graphicImage value="/resources/images/logo_web_small.jpg" style="margin-top: 10px"></h:graphicImage>
+				<h:outputLabel value="Start A New Advertisement Campaign" style="font-size: larger;font-weight: bold;position: absolute;margin-left: 20px;margin-top: 30px;"/>
+				<h:panelGrid cellpadding="3" columns="2" style="padding:20px">
+					<p:outputLabel for="tf1" value="Campaign Name: "/>
+		       	    <p:inputText id="tf1" value="#{resultPageUIModelBean.adTitle}" size="30" placeholder="Enter a name for your campaign" style="font-style:italic"/>
+		       	    <p:outputLabel for="tf2" value="Product Description: "/>
+		       	    <p:inputTextarea id="tf2" rows="3" cols="31" value="#{resultPageUIModelBean.adDesc}" counter="display" placeholder="Write a short description of your ad" style="font-style:italic" maxlength="50" counterTemplate="{0} characters remaining." autoResize="false"/>
+		       	    <p:outputLabel></p:outputLabel>
+		       	    <h:outputText id="display" style="font-size:small"></h:outputText>
+		       	    <p:outputLabel for="tf3" value="Keywords: "/>
+		       	    <p:inputTextarea id="tf3" value="#{resultPageUIModelBean.adKeywords}" rows="5" cols="31" placeholder="Enter each keyword in a new line" style="font-style:italic"/>
+		       	    <p:outputLabel for="tf4" value="Bid price($): "/>
+		       	    <p:inputText id="tf4" value="#{resultPageUIModelBean.adBidPrice}" size="30" placeholder="Enter your price per click" style="font-style:italic"/>
+		       	    <p:outputLabel></p:outputLabel>
+		       	    <p:commandButton value="Next" onclick="nextScreen(this)"></p:commandButton>
+		       	</h:panelGrid>
+		       	<h:panelGrid cellpadding="3" columns="2" style="padding:20px;display:none">
+					<p:outputLabel for="tf5" value="Location: "/>
+		       	    <p:inputText id="tf5" value="#{resultPageUIModelBean.location}" size="30" placeholder="Enter a location for targeting your ads" style="font-style:italic"/>
+		       	    <p:outputLabel for="tf7" value="Daily Budget Limit: "/>
+		       	    <p:inputText id="tf7" value="#{resultPageUIModelBean.budgetLimit}" size="30" placeholder="Enter your daily spending limit" style="font-style:italic"/>
+		       	    <p:outputLabel></p:outputLabel>
+		       	    <p:commandButton value="Submit"></p:commandButton>
+		       	</h:panelGrid>
+       	    </h:form>
+			
+		</p:dialog>
+	</h:form>
+</h:body>
+</html>
